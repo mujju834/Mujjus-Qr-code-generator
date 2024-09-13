@@ -40,6 +40,28 @@ export default function Home() {
     }, 2000); // Simulating a 2-second loading
   };
 
+  // Function to download QR code
+  const handleDownloadQRCode = () => {
+    const svg = document.getElementById("qrcode");
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const pngFile = canvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngFile;
+      downloadLink.download = "qr-code.png";
+      downloadLink.click();
+    };
+    img.src = "data:image/svg+xml;base64," + btoa(svgData);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white p-5">
       <h1 className="text-4xl font-bold mb-5 text-center">Mujju - QR Code Generator</h1>
@@ -97,10 +119,20 @@ export default function Home() {
         <div className="mt-8 flex justify-center">
           {hasGenerated && !isLoading && qrValue && (
             <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-              <QRCode value={qrValue} />
+              <QRCode id="qrcode" value={qrValue} />
             </div>
           )}
         </div>
+
+        {/* Download QR Code Button */}
+        {!isLoading && qrValue && (
+          <button
+            onClick={handleDownloadQRCode}
+            className="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow-md mt-5 hover:bg-green-700 transition"
+          >
+            Download QR Code
+          </button>
+        )}
       </div>
     </div>
   );
