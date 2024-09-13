@@ -4,9 +4,9 @@ import { useState } from "react";
 import QRCode from "react-qr-code";
 
 // Helper function to validate URL
-const isValidURL = (string: any) => {
+const isValidURL = (data: string) => {
   try {
-    new URL(string);
+    new URL(data);
     return true;
   } catch (_) {
     return false;
